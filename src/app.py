@@ -11,4 +11,6 @@ if __name__ == "__main__":
     window = Window(model) #Initialising the main window
     window.show()
 
+
+    print("selection")
     sys.exit(app.exec()) # Main event loop
