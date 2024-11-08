@@ -12,5 +12,4 @@ if __name__ == "__main__":
     window.show()
 
 
-    print("selection")
     sys.exit(app.exec()) # Main event loop
