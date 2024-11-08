@@ -1,0 +1,13 @@
+PySide6==6.7.2
+numpy==2.0.1
+matplotlib==3.9.0
+ezdxf==1.3.2
+networkx==3.3
+PyInstaller==6.9.0
+plotly==5.23.0
+vtk==9.3.1
+pyvtk==0.5.18
+pyqt5
+defusedxml==0.7.1
+appdirs==1.4.4
+pyclipper==1.3.0.post5

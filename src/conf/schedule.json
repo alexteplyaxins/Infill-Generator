@@ -1,0 +1,78 @@
+{
+    "layer_0": {
+        "nozzle_1": {
+            "density": 0.5,
+            "infill": "Lines-0",
+            "spacing": 2.0,
+            "speed": 6.0,
+            "pos": [
+                0.0,
+                0.0
+            ]
+        }
+    },
+    "layer_1": {
+        "nozzle_1": {
+            "density": 0.5,
+            "infill": "Lines-90",
+            "spacing": 2.0,
+            "speed": 5.0,
+            "pos": [
+                0.0,
+                0.0
+            ]
+        },
+        "nozzle_2": {
+            "density": 0.5,
+            "infill": "Lines-90",
+            "spacing": 1.0,
+            "speed": 5.0,
+            "pos": [
+                0.5,
+                0.5
+            ]
+        },
+        "nozzle_3": {
+            "density": 0.5,
+            "infill": "Lines-90",
+            "spacing": 1.0,
+            "speed": 5.0,
+            "pos": [
+                0.5,
+                0.5
+            ]
+        }
+    },
+    "layer_2": {
+        "nozzle_1": {
+            "density": 0.5,
+            "infill": "Lines-0",
+            "spacing": 1.0,
+            "speed": 5.0,
+            "pos": [
+                0.0,
+                0.0
+            ]
+        },
+        "nozzle_2": {
+            "density": 0.5,
+            "infill": "Lines-0",
+            "spacing": 1.0,
+            "speed": 5.0,
+            "pos": [
+                0.5,
+                0.5
+            ]
+        },
+        "nozzle_3": {
+            "density": 0.5,
+            "infill": "Lines-0",
+            "spacing": 1.0,
+            "speed": 5.0,
+            "pos": [
+                0.5,
+                0.5
+            ]
+        }
+    }
+}
