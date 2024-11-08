@@ -31,8 +31,6 @@ def greedy_edge_selection_tsp_general_graph(edges, n):
 
     Returns:
     - path: List of vertices representing the TSP path.
-    - edge_list: List of edges in the form (u, v) representing the TSP path.
-    - total_distance: The total weight of the TSP path.
     """
     # Sort edges by their weight
     edges.sort(key=lambda x: x[0])
@@ -100,19 +98,3 @@ def reconstruct_path(edge_list, n, start):
             break
 
     return path
-
-if __name__ == "__main__":
-    # Example usage with a general graph
-    edges = [
-        (2, 0, 1),  # Edge with weight 2 between vertex 0 and 1
-        (3, 0, 2),  # Edge with weight 3 between vertex 0 and 2
-        (1, 1, 2),  # Edge with weight 1 between vertex 1 and 2
-        (4, 1, 3),  # Edge with weight 4 between vertex 1 and 3
-        (5, 2, 3),  # Edge with weight 5 between vertex 2 and 3
-    ]
-
-    n = 4  # Number of vertices
-
-    path = greedy_edge_selection_tsp_general_graph(edges, n)
-
-    print("Path:", path)

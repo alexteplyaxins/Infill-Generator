@@ -1,15 +1,8 @@
 from model.grid import path_dict_2_grid
 from model.gcodeplot import get_plot_html
-import fullcontrol.devices.community.singletool.generic
 import fullcontrol.gcode.primer_library
 
 import plotly.graph_objects as go
-
-from model.primitives import (
-    Cell,
-    InfillGraph
-)
-import matplotlib as plt
 
 import fullcontrol as fc
 from fullcontrol.visualize.state import State
@@ -74,19 +67,24 @@ class GCodeWriter:
         with open(filename, "w") as file:
             file.write(gcode)
 
-if __name__ == "__main__":
-    cell = Cell(r"DXF files/square.DXF")
-    graph = InfillGraph(cell, 1, 1)
-    graph.combine_cycle(2)
-    path_dicts = graph.get_infill_paths(0, 1)
-    # graph.plot_comb(1, fig)
-    # plt.show()
-    path_dict = path_dicts[1]
-    
-    gcode = GCodeWriter(path_dicts=path_dicts, cell_width=cell.width, cell_height=cell.height, cols=7, rows=4)
-    print_settings = {'extrusion_width': 0.4,'extrusion_height': 0.2, 'nozzle_temp': 200, 'bed_temp': 60, 'fan_percent': 100}
-    printer_name = 'ender_3'
-    filename = 'hello'
-    gcode.setup(setting=print_settings, offset=(10, 10), scale=0.5, num_layers=10, printer=printer_name)
-    gcode.make_steps()
-    gcode.plot()
+    def save_gcode2(self, layers, filename):
+        steps = []
+        offset_x = self.offset[0]
+        offset_y = self.offset[1]
+        initial_z = 0.6*self.layer_height
+        
+        steps.append(fc.Extruder(on=False))
+        steps.append(fc.Point(x=offset_x, y=offset_y, z=initial_z))
+
+        for i in range(len(layers)):
+            layer = [(x*self.scale+offset_x, y*self.scale+offset_y) for x, y in layers[i][0]]
+            steps.append(fc.Point(x=layer[0][0], y=layer[0][1], z=initial_z+i*self.layer_height))
+            steps.append(fc.Extruder(on=True))
+            for point in layer:
+                steps.append(fc.Point(x=point[0], y=point[1]))
+            steps.append(fc.Extruder(on=False))
+
+        self.steps2 = steps
+        gcode = fc.transform(self.steps2, 'gcode', fc.GcodeControls(printer_name=self.printer, initialization_data=self.setting))
+        with open(filename, "w") as file:
+            file.write(gcode)

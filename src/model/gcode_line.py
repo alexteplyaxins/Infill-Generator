@@ -60,14 +60,16 @@ class gcode_line():
                     elif c.isnumeric() or c == '.' or c == '-':
                         if c== '-':
                             num = '-'
-                        else:
+                        else:  
                             num += str(c)
+                        
                         
                 if c == ')':
                     comment = False
                 if cmd != '\0':
                     if num!= '-' and num != '':
-                     self.parseGCodeToken(cmd, float(num))
+                        if '..' not in num:
+                            self.parseGCodeToken(cmd, float(num))
 
         except Exception as bug:
             print(bug)

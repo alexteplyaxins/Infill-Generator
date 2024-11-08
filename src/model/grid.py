@@ -54,7 +54,7 @@ def connect_paths(paths, added_paths):
 
     for path1 in paths:
         for path2 in added_paths:
-            if path1[-1] == path2[0]: 
+            if path1[-1] == path2[0]:
                 temp = path1 + path2[1:]
                 temp_paths1.append(temp)
                 break
@@ -153,6 +153,8 @@ def connect_grid_paths(grid_paths, width, height):
             bottom.append(endpoint)
         if endpoint[1] == height:
             top.append(endpoint)
+        
+        
     
     def make_edges(grid_paths): #Build a paths graph for greedy expansion
         edges = []

@@ -7,16 +7,9 @@ from __future__ import print_function
 import os.path
 import sys
 import math
-import time
 import struct
-import json
 import re
 import matplotlib
-
-import gzip                         # for compressed .3mj
-import zipfile                      # for .3mf
-import defusedxml.ElementTree       # for .amf (and maybe .3mf as well)
-
 
 from model.point3d import Point3DCache
 from model.vector import Vector
@@ -310,7 +303,13 @@ class ModelData(object):
         cy = (self.points.miny + self.points.maxy)/2.0
         cz = (self.points.minz + self.points.maxz)/2.0
         self.translate((cp[0]-cx, cp[1]-cy, cp[2]-cz))
-
+    
+    def bounding_box(self):
+        return [
+            [self.points.minx, self.points.maxx],
+            [self.points.miny, self.points.maxy],
+            [self.points.minz, self.points.maxz]
+            ]
     def translate(self, offset):
         """Translates vertices of all facets in the STL model."""
         self.points.translate(offset)

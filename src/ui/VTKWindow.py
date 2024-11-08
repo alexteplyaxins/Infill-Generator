@@ -214,13 +214,13 @@ class VtkViewer(QWidget):
         else:
             return False
         reader.SetFileName(object_file_path)
-
+        reader.Update()
         # Compute the center of the STL geometry's bounding box
         bounds = reader.GetOutput().GetBounds()
         center = [(bounds[1] + bounds[0]) / 2.0, (bounds[3] + bounds[2]) / 2.0, (bounds[5] + bounds[4]) / 2.0]
 
         transform = vtk.vtkTransform()
-        transform.Translate(-center[0], -center[1], -center[2])  # Translate in X and Y to the origin, and set Z to 0.
+        transform.Translate(-center[0], -center[1], -bounds[4])  # Translate in X and Y to the origin, and set Z to 0.
         transformFilter = vtk.vtkTransformPolyDataFilter()
         transformFilter.SetInputConnection(reader.GetOutputPort())
         transformFilter.SetTransform(transform)
@@ -239,5 +239,5 @@ class VtkViewer(QWidget):
         self.renderer.AddActor(actor)
         self.renderer.ResetCamera()
         self.vtk_widget.GetRenderWindow().Render()
-        print("Complete")
+        
         return True

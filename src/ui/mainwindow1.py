@@ -77,7 +77,7 @@ class Ui_MainWindow(object):
         self.model3d.setObjectName(u"model3d")
         self.frame_2 = QFrame(self.model3d)
         self.frame_2.setObjectName(u"frame_2")
-        self.frame_2.setGeometry(QRect(9, 9, 701, 441))
+        self.frame_2.setMinimumSize(QSize(700, 440))
         self.frame_2.setFrameShape(QFrame.Shape.StyledPanel)
         self.frame_2.setFrameShadow(QFrame.Shadow.Raised)
         self.tabWidget.addTab(self.model3d, "")
@@ -98,18 +98,14 @@ class Ui_MainWindow(object):
         self.ZLayer_sld.setGeometry(QRect(660, 10, 20, 421))
         self.ZLayer_sld.setValue(1)
         self.ZLayer_sld.setOrientation(Qt.Orientation.Vertical)
-        # self.slider_printpath_preview = QWidget(self.preview_layer)
-        # self.slider_printpath_preview.setObjectName(u"slider_printpath_preview")
-        # self.slider_printpath_preview.setGeometry(QRect(20, 10, 621, 421))
-        # self.slider_printpath_preview.setFrameShape(QFrame.Shape.StyledPanel)
-        # self.slider_printpath_preview.setFrameShadow(QFrame.Shadow.Raised)
+        
         self.tabWidget.addTab(self.preview_layer, "")
 
         ## Add Matplotline MplWidget
         self.MplWidget1 = MplWidget1(self.preview_layer)
         self.MplWidget1.setObjectName("MplWidget")
-        self.MplWidget1.setGeometry(QRect(30, 30, 621, 421))
-        # self.preview_layer.addWidget(self.MplWidget1)
+        self.MplWidget1.setMinimumSize(QSize(620, 420))
+        self.MplWidget1.setMaximumSize(QSize(11112312, 121312312))
         ################################
         
         self.horizontalLayout_1.addWidget(self.tabWidget)
@@ -144,13 +140,21 @@ class Ui_MainWindow(object):
         self.formLayout_2.setObjectName(u"formLayout_2")
         self.label_10 = QLabel(self.widget)
         self.label_10.setObjectName(u"label_10")
+
+        
         font3 = QFont()
         font3.setFamilies([u"Segoe UI"])
         font3.setPointSize(10)
         font3.setBold(True)
         self.label_10.setFont(font3)
 
+        # add cell scale
+        self.label_scale = QLabel(self.widget)
+        self.label_scale.setObjectName(u"label_scale")
+        self.label_scale.setFont(font3)
+
         self.formLayout_2.setWidget(0, QFormLayout.LabelRole, self.label_10)
+        self.formLayout_2.setWidget(0, QFormLayout.LabelRole, self.label_scale)
 
         self.label_2 = QLabel(self.widget)
         self.label_2.setObjectName(u"label_2")
@@ -178,7 +182,14 @@ class Ui_MainWindow(object):
         self.x_cells.setMinimum(1)
         self.x_cells.setMaximum(3)
 
+        self.cell_scale = QDoubleSpinBox(self.widget)
+        self.cell_scale.setObjectName(u"cell_scale")
+        self.cell_scale.setFont(font1)
+        self.cell_scale.setRange(0.1, 3.0)  
+        self.cell_scale.setValue(1)
+
         self.formLayout_2.setWidget(3, QFormLayout.FieldRole, self.x_cells)
+        self.formLayout_2.setWidget(0, QFormLayout.FieldRole, self.cell_scale)
 
         self.label_14 = QLabel(self.widget)
         self.label_14.setObjectName(u"label_14")
@@ -288,7 +299,7 @@ class Ui_MainWindow(object):
         self.layer_height.setMinimum(0.100000000000000)
         self.layer_height.setMaximum(0.500000000000000)
         self.layer_height.setSingleStep(0.100000000000000)
-        self.layer_height.setValue(0.200000000000000)
+        self.layer_height.setValue(0.3)
 
         self.formLayout_2.setWidget(13, QFormLayout.FieldRole, self.layer_height)
 
@@ -304,7 +315,7 @@ class Ui_MainWindow(object):
         self.line_width.setMinimum(0.200000000000000)
         self.line_width.setMaximum(2.000000000000000)
         self.line_width.setSingleStep(0.100000000000000)
-        self.line_width.setValue(0.400000000000000)
+        self.line_width.setValue(0.300000000000000)
 
         self.formLayout_2.setWidget(14, QFormLayout.FieldRole, self.line_width)
 
@@ -318,7 +329,7 @@ class Ui_MainWindow(object):
         self.x_offset.setObjectName(u"x_offset")
         self.x_offset.setFont(font1)
         self.x_offset.setSingleStep(0.100000000000000)
-        self.x_offset.setValue(10.000000000000000)
+        self.x_offset.setValue(50.000000000000000)
 
         self.formLayout_2.setWidget(15, QFormLayout.FieldRole, self.x_offset)
 
@@ -333,7 +344,7 @@ class Ui_MainWindow(object):
         self.y_offset.setMinimumSize(QSize(0, 0))
         self.y_offset.setFont(font1)
         self.y_offset.setSingleStep(0.100000000000000)
-        self.y_offset.setValue(10.000000000000000)
+        self.y_offset.setValue(50.000000000000000)
 
         self.formLayout_2.setWidget(16, QFormLayout.FieldRole, self.y_offset)
 
@@ -365,7 +376,7 @@ class Ui_MainWindow(object):
         self.nozzle_temp.setFont(font1)
         self.nozzle_temp.setMinimum(180)
         self.nozzle_temp.setMaximum(250)
-        self.nozzle_temp.setValue(200)
+        self.nozzle_temp.setValue(215)
 
         self.formLayout_2.setWidget(18, QFormLayout.FieldRole, self.nozzle_temp)
 
@@ -380,7 +391,7 @@ class Ui_MainWindow(object):
         self.bed_temp.setMinimumSize(QSize(0, 0))
         self.bed_temp.setFont(font1)
         self.bed_temp.setMinimum(40)
-        self.bed_temp.setValue(60)
+        self.bed_temp.setValue(66)
 
         self.formLayout_2.setWidget(19, QFormLayout.FieldRole, self.bed_temp)
 
@@ -531,6 +542,7 @@ class Ui_MainWindow(object):
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.preview), QCoreApplication.translate("MainWindow", u"Preview", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.preview_layer), QCoreApplication.translate("MainWindow", u"Printpath View", None))
         self.label_10.setText(QCoreApplication.translate("MainWindow", u"Split", None))
+        self.label_10.setText(QCoreApplication.translate("MainWindow", u"Cell Scale", None))
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"Split layers", None))
         self.label_13.setText(QCoreApplication.translate("MainWindow", u"X cells", None))
         self.label_14.setText(QCoreApplication.translate("MainWindow", u"Y cells", None))

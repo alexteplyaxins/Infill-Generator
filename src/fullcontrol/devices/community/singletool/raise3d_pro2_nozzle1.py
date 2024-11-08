@@ -41,7 +41,7 @@ def set_up(user_overrides: dict):
     starting_procedure_steps.append(Printer(travel_speed=initialization_data["travel_speed"]))
     starting_procedure_steps.append(Point(x=10.0, y=10.0, z=0.3))
     starting_procedure_steps.append(Extruder(on=True))
-    starting_procedure_steps.append(ManualGcode(text='M117 Printing...'))
+    starting_procedure_steps.append(ManualGcode(text='M117 Printing'))
     starting_procedure_steps.append(ManualGcode(text='M1001'))
     starting_procedure_steps.append(ManualGcode(text=';-----\n; END OF STARTING PROCEDURE\n;-----\n'))
 

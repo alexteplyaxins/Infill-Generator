@@ -9,6 +9,30 @@ from datetime import datetime
 from fullcontrol.gcode.tips import tips
 
 
+def footGcode():
+    fGcode = []
+    fGcode.append("G91 ;Relative positioning")
+    fGcode.append("G1 E-2 F2700 ;Retract a bit")
+    fGcode.append("G1 E-2 Z0.2 F2400 ;Retract and raise Z")
+    fGcode.append("G1 X5 Y5 F3000 ;Wipe out")
+    fGcode.append("G1 Z10 ;Raise Z more")
+    fGcode.append("G90 ;Absolute positioning")
+    fGcode.append("G1 X0 Y235 ;Present print")
+    fGcode.append("M106 S0 ;Turn-off fan")
+    fGcode.append("M104 S0 ;Turn-off hotend")
+    fGcode.append("M140 S0 ;Turn-off bed")
+    fGcode.append("M84 X Y E ;Disable all steppers but Z")
+    fGcode.append("M82 ;absolute extrusion mode")
+    fGcode.append("M104 S0")
+    return (fGcode)
+def headGcode():
+    hGcode = []
+    hGcode.append("G1 X0.1 Y20 Z0.3 F5000.0 ; Move to start position")
+    hGcode.append("G1 X0.1 Y200.0 Z0.3 F1500.0 E15 ; Draw the first line")
+    hGcode.append("G1 X0.4 Y200.0 Z0.3 F5000.0 ; Move to side a little")
+    hGcode.append("G1 X0.4 Y20 Z0.3 F1500.0 E30 ; Draw the second line")
+    return (hGcode)
+
 def gcode(steps: list, gcode_controls: GcodeControls, show_tips: bool):
     '''
     Generate a gcode string from a list of steps.
@@ -31,6 +55,14 @@ def gcode(steps: list, gcode_controls: GcodeControls, show_tips: bool):
         if gcode_line != None:
             state.gcode.append(gcode_line)
         state.i += 1
+
+        if state.i == 7: #Bo sung tam headcode vào vị trí số 7 (ko rõ ở đâu có index này)
+            for code in headGcode():
+                state.gcode.append(code)
+
+    for code in footGcode():
+        state.gcode.append(code)
+    
     gc = '\n'.join(state.gcode)
 
     if gcode_controls.save_as != None:

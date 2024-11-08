@@ -56,7 +56,7 @@ class Cell:
         infill pattern in a side-by-side layout.
     """
 
-    def __init__(self, file_path):
+    def __init__(self, file_path, scale):
         """Initializes a Cell instance by reading a DXF file and extracting geometric data.
 
         Parameters
@@ -66,6 +66,8 @@ class Cell:
         """
         self.points, self.edges, self.width, self.height, self.doc = self.read_dxf(file_path) #Read dxf
         self.postprocess() #Postprocess
+        self.set_scale(scale)
+
 
     def postprocess(self):
         """Processes the edges to identify and handle intersections and dissolve segments as necessary.
@@ -251,6 +253,36 @@ class Cell:
         self.plot_infill(ax2)
         ax1.set_title('Unitcell')
         ax2.set_title('Infill preview')
+    
+    def set_scale(self, factor):
+        """Scales the unit cell geometry by a specified factor.
+
+        Parameters
+        ----------
+        factor : float
+            The scaling factor. A factor > 1 will enlarge the unit cell, while
+            a factor < 1 will shrink it.
+        """
+        # Scale points
+        scaled_points = set()
+        for point in self.points:
+            scaled_point = (point[0] * factor, point[1] * factor)
+            scaled_points.add(scaled_point)
+        self.points = scaled_points
+
+        # Scale edges
+        scaled_edges = set()
+        for edge in self.edges:
+            scaled_edge = (
+                edge[0] * factor, edge[1] * factor,
+                edge[2] * factor, edge[3] * factor
+            )
+            scaled_edges.add(scaled_edge)
+        self.edges = scaled_edges
+
+        # Scale width and height
+        self.width *= factor
+        self.height *= factor
 
 class InfillGraph:
     """ A class to represent a graph for the infill pattern of a 3D printing unit cell.
@@ -528,18 +560,3 @@ class InfillGraph:
         ax.set_xlabel('X')
         ax.set_ylabel('Y')
         ax.set_zlabel('Layers')
-
-if __name__ == "__main__":
-    cell = Cell(r"../DXF files/arrowhead.DXF")
-    graph = InfillGraph(cell, 1, 1)
-    fig, ax = plt.subplots()
-    graph.plot(ax)
-    plt.show()
-    # cycle_comb = graph.combine_cycle(6)
-    # print(graph.cycles)
-    # print(len(graph.cycles))
-    # if graph.cycles:
-    #     fig, ax = plt.subplots(1, 6)
-    #     for i in range(6):
-    #         graph.plot_cycle(ax[i], graph.cycles[i])
-    #     plt.show()
