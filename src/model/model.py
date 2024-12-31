@@ -155,7 +155,7 @@ class Model:
     
     def clip_paths(self, mask, lines):
         npath = []
-        
+        # some comment
         lj = 0
         n = len(lines)
         for lj in range(0, n-1):
