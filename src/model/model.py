@@ -67,7 +67,7 @@ class Model:
         )
         self.gcode_writer.setup(setting=setting, offset=offset, scale=scale, num_layers=num_layers, printer=printer)
         self.gcode_writer.make_steps()
-        logger.info("wFinished generating infill print path from unit cell split.")
+        logger.info("Finished generating infill print path from unit cell split.")
     
     def generate_preview(self):
         logger.info("Updating print preview...")
@@ -143,7 +143,7 @@ class Model:
             x1, y1 = polygon[i]
             x2, y2 = polygon[(i + 1) % n]  # Next vertex (wraps around to the first vertex)
             
-            # Check if the ray crosses the edge
+            # Check if the ray crosses the edge 
             if min(y1, y2) < y <= max(y1, y2) and x <= max(x1, x2):
                 # Compute the intersection point of the edge with the horizontal ray at y
                 if y1 != y2:
@@ -168,4 +168,4 @@ class Model:
                 npath.append(lines[lj])
                 if not self._is_in_poly(lines[lj + 1], mask):
                     npath.append(self._line_intersection(lines[lj], lines[lj+1], mask))
-        return npath      
+        return npath

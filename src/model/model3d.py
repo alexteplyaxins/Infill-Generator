@@ -1,7 +1,3 @@
-# History:
-# 2021/09/04: supporting 3MF, OFF, Wavefront OBJ and compressed 3MJ too
-# 2021/09/04: renamed stl_data.py to model3d.py to reflect broader functionality to support more than just stl, first new format uncompressed 3MJ
-
 from __future__ import print_function
 
 import os.path
@@ -364,69 +360,64 @@ class ModelData(object):
 
     def slice_at_z(self, z, layer_h):
         """
+        Parameters:
+            z (float): The height at which to take the slice.
+            layer_h (float): The layer height to determine the layer number.
+        Returns:
+            tuple: A tuple containing two lists:
+                - outpaths (list): A list of complete paths (polygons) at the given Z level.
+                - deadpaths (list): A list of incomplete paths (polygons) at the given Z level.
+        Warns:
+            Prints a warning message if there are incomplete polygons at the given Z level.
         Get paths outlines of where this model intersects the given Z level.
-        Param:
-            z: the hight take slide
-            layer_h: the layer number get slide
         """
         def ptkey(pt):
             return "{0:.5f}, {1:.5f}".format(pt[0], pt[1])
         
         layer = round(math.floor(z / layer_h + 0.5), 2)
         paths = {}
-        i = 0
+        
         for facet in self.get_layer_facets(layer):
-            i=i+1
             line = facet.slice_at_z(z)
             if line is None:
                 continue
             path = list(line)
-            key1 = ptkey(path[0])  # Diem dau
-            key2 = ptkey(path[-1]) # Diem cuoi
+            key1 = ptkey(path[0])
+            key2 = ptkey(path[-1])
 
-            if key2 in paths and paths[key2][-1] == path[0]:
-               # key2 in paths và paths key2 trung voi diem dau 
-               # cua path dang xét thì tiep tuc
-                continue
             if key1 not in paths:
-               # key1 khong trong paths thì làm rỗng gia tri cua key1
                 paths[key1] = []
             paths[key1].append(path)
+
+            if key2 not in paths:
+                paths[key2] = []
+            paths[key2].append(path)
 
         outpaths = []
         deadpaths = []
         while paths:
-            path = paths[next(iter(paths))][0]  
-            key1 = ptkey(path[0])
-            key2 = ptkey(path[-1])
-            del paths[key1][0]
-            if not paths[key1]:
-                del paths[key1]
-            if key1 == key2:
-               # print('equal')
-                outpaths.append(path)
-                continue
-            elif key2 in paths:
-                opath = paths[key2][0]
-                del paths[key2][0]
-                if not paths[key2]:
-                    del paths[key2]
-                path.extend(opath[1:])
-            elif key1 in paths:
-                opath = paths[key1][0]
-                del paths[key1][0]
-                if not paths[key1]:
-                    del paths[key1]
-                opath = list(reversed(opath))
-                opath.extend(path[1:])
-                path = opath 
-            else:
-                deadpaths.append(path) 
-                continue
-            key1 = ptkey(path[0])
-            if key1 not in paths:
-                paths[key1] = []
-            paths[key1].append(path)
+            key, path_list = paths.popitem()
+            path = path_list.pop(0)
+            if not path_list:
+                del paths[key]
+
+            while True:
+                key1 = ptkey(path[0])
+                key2 = ptkey(path[-1])
+
+                if key1 == key2:
+                    outpaths.append(path)
+                    break
+
+                if key2 in paths:
+                    next_path = paths[key2].pop(0)
+                    if not paths[key2]:
+                        del paths[key2]
+                    path.extend(next_path[1:])
+                else:
+                    deadpaths.append(path)
+                    break
+
         if deadpaths:
             print(f'WARN: Incomplete Polygon at z={z}')
 

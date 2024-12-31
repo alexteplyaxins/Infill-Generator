@@ -27,11 +27,9 @@ class GridInfill():
 
         path_dicts = infill_graph.get_infill_paths(index, 1) #index, scale
 
-        i = 0
         for path in path_dicts:
             path = self._path_dict_2_grid(path, nrows, ncols)
-            if i%2: path = path[:-1]
-            i += 1
+           
             self.final_paths.append(path)
 
         self.layer_peroid = len(self.final_paths)

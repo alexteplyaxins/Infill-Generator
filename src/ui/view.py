@@ -11,6 +11,7 @@ from constants import *
 from ui.VTKWindow import VtkViewer
 import model.gcode_line as gcode_line
 
+import matplotlib.pyplot as plt
 from model.slicer import Slicer
 
 
@@ -142,10 +143,10 @@ class Window(QMainWindow, Ui_MainWindow):
     def gen_print_path(self):
         if not self.model.cell:
             logger.info("Please load the cell")
-            return
+            return False
         if not self.file_name:
             logger.info("Please load the STL file")
-            return
+            return False
         if not self.model.infill_graph:
             logger.info("Please split and generate the graph before")
             return False
@@ -320,32 +321,37 @@ class Window(QMainWindow, Ui_MainWindow):
             self.ZLayer_sld.setRange(1, len(self.zLayer) - 1)
             self.ZLayer_sld.setPageStep(1)
             self.ZLayer_sld.setTickInterval(1)
+
             if value < len(self.zLayer):  # Lấy các list path trong Layer
                 iLayer = self.zLayer[value]
+                index = 0
+                # Create a colormap from blue to red
+                cmap = plt.cm.coolwarm  # This is a gradient from blue to red 
+                # Generate colors for each line based on the number of lines
+                num_lines = len(iLayer)
+                colors = [cmap(i / (num_lines - 1)) for i in range(num_lines)]
                 for sLayer in iLayer:
+                    
                     if sLayer[0] != '':  # List các tọa độ X
                         G = sLayer[4][len(sLayer[4]) - 1]
-                        self.plotData( sLayer[0], sLayer[1], self.color[G],
-                            self.linetype[G], 1.5, '')
-                    self.MplWidget1.canvas.axes.set_title(
-                        ' Mô tả lớp in thứ ' + str(value))
+                        self.plotData( sLayer[0], sLayer[1], colors[index], self.linetype[G], 1.5)
+                    index += 1
+            
+                self.MplWidget1.canvas.axes.set_title(' Mô tả lớp in thứ ' + str(value))
     
         self.MplWidget1.canvas.axes.set_aspect('equal', 'box')
         self.MplWidget1.canvas.draw()
 
-    def plotData(self, XL, YL, linecolor, linetype, linewidth, label):
-        if label != '':
-            self.MplWidget1.canvas.axes.plot(
-                XL, YL, linestyle=linetype, linewidth=linewidth, color=linecolor, label=label)
-            self.MplWidget1.canvas.axes.legend(loc='upper left')
-        else:
-            self.MplWidget1.canvas.axes.plot(
-                XL, YL, linestyle=linetype, linewidth=linewidth, color=linecolor)
+    def plotData(self, XL, YL, linecolor, linetype, linewidth):
+       
+        self.MplWidget1.canvas.axes.plot(
+            XL, YL, linestyle=linetype, linewidth=linewidth, color=linecolor)
     
 
     
 
     def getPlotData(self, gcode_lines):
+        gcode_lines = gcode_lines.split('\n')
         Lx = []
         Ly = []
         Lz = []
@@ -360,17 +366,14 @@ class Window(QMainWindow, Ui_MainWindow):
         self.color = ['blue', 'red', 'green', 'brown', 'brown']
         self.linetype = ['dashed', 'solid', 'solid', 'solid', 'solid']
         index = 0
-        layer = 0
 
         for line in gcode_lines:
             index += 1
-            if 'LAYER:' in line:
-                layer += 1
-                if(layer != 1): 
-                    self.zLayer.append(iLayer)
-                    iLayer = []
-                continue
-            
+
+            if 'Z' in line and index > 13:
+                self.zLayer.append(iLayer)
+                iLayer = []
+                
             if (line != '') and (";" not in line) and ("'" not in line):
                 newLine.code = line
                 newLine.R = 0
@@ -416,6 +419,5 @@ class Window(QMainWindow, Ui_MainWindow):
                 sLayer.append(iG)
                 iLayer.append(sLayer)
                 iLayer.append(sLayer)
-
                 self.zLayer.append(iLayer)
         

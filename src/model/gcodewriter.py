@@ -67,7 +67,7 @@ class GCodeWriter:
         with open(filename, "w") as file:
             file.write(gcode)
 
-    def save_gcode2(self, layers, filename):
+    def save_gcode2(self, layers, filename, progres_bar):
         steps = []
         offset_x = self.offset[0]
         offset_y = self.offset[1]
@@ -76,7 +76,10 @@ class GCodeWriter:
         steps.append(fc.Extruder(on=False))
         steps.append(fc.Point(x=offset_x, y=offset_y, z=initial_z))
 
+        prog_map = [int(100*i/len(layers)) for i in range(len(layers))]
         for i in range(len(layers)):
+
+            progres_bar.setValue(prog_map[i])
             layer = [(x*self.scale+offset_x, y*self.scale+offset_y) for x, y in layers[i][0]]
             steps.append(fc.Point(x=layer[0][0], y=layer[0][1], z=initial_z+i*self.layer_height))
             steps.append(fc.Extruder(on=True))
@@ -88,3 +91,5 @@ class GCodeWriter:
         gcode = fc.transform(self.steps2, 'gcode', fc.GcodeControls(printer_name=self.printer, initialization_data=self.setting))
         with open(filename, "w") as file:
             file.write(gcode)
+        
+        return gcode
